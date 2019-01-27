@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>MessageInfo</title>
+<!-- <h1>Welcome to Messenger Application</h1> -->
+</head>
+<body>
+<div>
+<input id="msgId" name="messageId" placeholder="Message ID"/>
+<button onclick="getMessage()">Get Message</button>
+<p id="get"> </p><br>
+</div>
+
+<div id="insertion">
+<p> Please enter message details below</p>
+<input id="mssgId" type="text" placeholder="Message Id"/><br>
+<input id="msgInfo" type="text" placeholder="Message Info"/><br>
+<button onclick="insertMessage()">Insert Message</button> 
+<p id="insert"> </p>
+</div>
+</body>
+<script>
+function getMessage(){
+	var messageId = document.getElementById("msgId").value;
+	var url = "http://localhost:8083/MessengerApplication/webapi/message/"+messageId;
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function(){
+		if(this.readystate==4 & this.status ==200)
+			{
+			var messageObj = JSON.parse(this.responseText);
+			console.log(messageObj);
+			document.getElementById("get").innerText=this.responseText; 
+			}
+		}
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function insertMessage(){
+	var msgId = document.getElementById("mssgId").value;
+	var msgInfo = document.getElementById("msgInfo").value;
+	var url = "http://localhost:8083/MessengerApplication/webapi/message";
+	var messageObj = {messageId : ' ', messageInfo : ' '};
+	messageObj["messageId"] = msgId;
+	messageObj["messageInfo"] = msgInfo;
+	console.log(messageObj);
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function(){
+		if(this.status==200 & this.readyState==4){
+			document.getElementById("insert").innerText = this.responseText;}
+			}
+	xhttp.open("POST", url, true);
+	xhttp.setRequestHeader("Content-Type", "application/json");
+	xhttp.send(JSON.stringify(messageObj));
+}
+</script>
+</html>
